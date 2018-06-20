@@ -28,7 +28,6 @@ const timer = (function () {
         alarmSound.play();
         return;
       }
-
       displayTimeLeft(secondsLeft);
     }, 1000);
   }
@@ -38,6 +37,7 @@ const timer = (function () {
     const reminderSeconds = seconds % 60;
 
     const display = `${minutes}:${reminderSeconds < 10 ? '0' : ''}${reminderSeconds}`;
+
     timerDisplay.textContent = display;
     document.title = display;
   }
@@ -46,29 +46,38 @@ const timer = (function () {
     const end = new Date(timestamp);
     const hour = end.getHours();
     const minutes = end.getMinutes();
+    const changeHour = hour > 12 ? hour - 12 : hour;
 
-    endTime.textContent = `Be back at ${hour}:${minutes < 10 ? '0' : ''}${minutes}`;
+    endTime.textContent = `Be back at ${changeHour}:${minutes < 10 ? '0' : ''}${minutes}`;
   }
 
-  function reset() {
+  function reset(e) {
       clearInterval(countdown);
+      displayTimeLeft(0);
+      displayEndTime(0);
   }
 
-  function stop() {
+  function stop(e) {
+      clearInterval(countdown);
       alarmSound.pause();
       alarmSound.currentTime = 0;
   }
 
+  function finish(e) {
+      console.log(e)
+  }
+
   return {
-    init,
-    start,
-    stop
+      init,
+      start,
+      stop,
+      reset,
+      finish
   }
 })();
 
 const buttons = document.querySelectorAll('[data-time]');
-const actionButtons = document.querySelectorAll('[data-action-btn]');
-const inputField = document.querySelector('input');
+const actionBtn = document.querySelectorAll('[data-action]');
 
 timer.init({
   timerDisplaySelector: '.display__time-left',
@@ -78,18 +87,29 @@ timer.init({
 
 // Start timer on click
 function startTimer(e) {
-  const seconds = Number(this.dataset.time);
-  const inputSeconds = document.querySelector('input').value;
-  timer.start(seconds);
-  console.log(inputSeconds);
+    const seconds = Number(this.dataset.time);
+    timer.start(seconds);
 }
-function action(e) {
-    const menuAction = this.dataset.actionBtn;
-    timer.stop(menuAction);
+
+function actions(e) {
+    const action = this.dataset.action;
+    if (action === 'continue'){
+        console.log('finish')
+    } else if (action === 'stop'){
+        timer.stop();
+    } else {
+        timer.reset('');
+    }
 }
 
 buttons.forEach(btn => btn.addEventListener('click', startTimer));
-actionButtons.forEach(btn => btn.addEventListener('click', action));
+actionBtn.forEach(btns => btns.addEventListener('click', actions));
+document.customForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const mins = Number(this.minutes.value);
+    timer.start(mins * 60);
+    this.reset();
+});
 
 // 1. сделать метод stop который должен остановить и сбросить таймер.
 
