@@ -3,7 +3,8 @@ const timer = (function () {
   let countdown,
       timerDisplay,
       endTime,
-      alarmSound;
+      alarmSound,
+      timeValue;
 
   // Инициализация модуля
   function init(settings) {
@@ -20,6 +21,7 @@ const timer = (function () {
 
     displayTimeLeft(seconds);
     displayEndTime(then);
+    clearInterval(timeValue);
 
     countdown = setInterval(() => {
       const secondsLeft = Math.round( (then - Date.now()) / 1000 );
@@ -30,12 +32,12 @@ const timer = (function () {
       }
       displayTimeLeft(secondsLeft);
     }, 1000);
+    timeValue = countdown;
   }
 
   function displayTimeLeft(seconds) {
     const minutes = Math.floor(seconds / 60);
     const reminderSeconds = seconds % 60;
-
     const display = `${minutes}:${reminderSeconds < 10 ? '0' : ''}${reminderSeconds}`;
 
     timerDisplay.textContent = display;
@@ -55,6 +57,7 @@ const timer = (function () {
       clearInterval(countdown);
       displayTimeLeft(0);
       displayEndTime(0);
+      endTime.innerHTML = '';
   }
 
   function stop(e) {
@@ -64,7 +67,7 @@ const timer = (function () {
   }
 
   function finish(e) {
-      console.log(e)
+      console.log(timerDisplay.textContent);
   }
 
   return {
@@ -88,18 +91,20 @@ timer.init({
 // Start timer on click
 function startTimer(e) {
     const seconds = Number(this.dataset.time);
+    console.log (seconds);
     timer.start(seconds);
 }
 
 function actions(e) {
     const action = this.dataset.action;
     if (action === 'continue'){
-        console.log('finish')
+        return timer.finish();
     } else if (action === 'stop'){
-        timer.stop();
+        return timer.stop();
     } else {
-        timer.reset('');
+        return timer.reset();
     }
+
 }
 
 buttons.forEach(btn => btn.addEventListener('click', startTimer));
@@ -117,59 +122,3 @@ document.customForm.addEventListener('submit', function(e) {
 // разных форматах, дд : чч : мм : сс, чч : мм : сс или мм : сс. В том числе дата когда закончит таймер должна быть
 // полной день.месяц.год часы:минуты
 // 3. вызов методов цепочкой
-
-
-
-
-
-
-
-
-
-//-------------------------------------------------------------------------
-
-// const timerBlock = document.querySelector('.timer');
-// const timerControls = document.querySelector('.timer__controls');
-// const timerBtn = document.querySelector('.timer__button');
-//
-// // Погружение
-// timerBlock.addEventListener('click', function (e) {
-//   console.log(this);
-// }, true);
-//
-// timerControls.addEventListener('click', function (e) {
-//   console.log(this);
-// }, true);
-//
-// timerBtn.addEventListener('click', function (e) {
-//   console.log(this);
-// }, true);
-//
-// // Всплытие
-// timerBlock.addEventListener('click', function (e) {
-//   console.log(this);
-// });
-//
-// timerControls.addEventListener('click', function (e) {
-//   console.log(this);
-// });
-//
-// timerBtn.addEventListener('click', function (e) {
-//   console.log(this);
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
