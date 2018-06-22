@@ -4,7 +4,9 @@ const timer = (function () {
       timerDisplay,
       endTime,
       alarmSound,
-      timeValue;
+      display = [],
+      timeValue,
+      stopTime = -1;
 
   // Инициализация модуля
   function init(settings) {
@@ -36,46 +38,55 @@ const timer = (function () {
   }
 
   function displayTimeLeft(seconds) {
-    const minutes = Math.floor(seconds / 60);
-    const reminderSeconds = seconds % 60;
-    const display = `${minutes}:${reminderSeconds < 10 ? '0' : ''}${reminderSeconds}`;
 
-    timerDisplay.textContent = display;
-    document.title = display;
+      const minutes = Math.floor(seconds / 60);
+      const reminderSeconds = seconds % 60;
+      const Hours = Math.floor(minutes / 60);
+      const reminderminutes = minutes % 60;
+      const reminderHours = Hours % 24;
+      const days = Math.floor(Hours / 24);
+
+      const display = `${days>0 ? days+':': ''}${reminderHours< 10 && reminderHours>0 ? '0' 
+                                            : ''}${reminderHours>0 ? reminderHours+':'
+                                            : '' }${reminderminutes< 10 ? '0' 
+                                            : ''}${reminderminutes< 60 ? reminderminutes 
+                                            : ''}:${reminderSeconds < 10 ? '0' 
+                                            : ''}${reminderSeconds}`;
+      timerDisplay.textContent = display;
+      document.title = display;
   }
 
   function displayEndTime(timestamp) {
-    const end = new Date(timestamp);
-    const hour = end.getHours();
-    const minutes = end.getMinutes();
-    const changeHour = hour > 12 ? hour - 12 : hour;
+      const end = new Date(timestamp);
+      const endDate = end.toLocaleString();
 
-    endTime.textContent = `Be back at ${changeHour}:${minutes < 10 ? '0' : ''}${minutes}`;
+      endTime.textContent = `Be back ${endDate}`;
   }
 
   function reset(e) {
       clearInterval(countdown);
       displayTimeLeft(0);
+      timerDisplay.innerHTML = '';
       displayEndTime(0);
       endTime.innerHTML = '';
   }
 
   function stop(e) {
-      clearInterval(countdown);
-      alarmSound.pause();
-      alarmSound.currentTime = 0;
-  }
-
-  function finish(e) {
-      console.log(timerDisplay.textContent);
-  }
+      if(stopTime === -1) {          
+          start();
+      } else {
+          clearInterval(countdown);
+          stopTime = -1;
+          alarmSound.pause();
+          alarmSound.currentTime = 0;
+      }
+  } 
 
   return {
       init,
       start,
       stop,
-      reset,
-      finish
+      reset      
   }
 })();
 
@@ -91,20 +102,15 @@ timer.init({
 // Start timer on click
 function startTimer(e) {
     const seconds = Number(this.dataset.time);
-    console.log (seconds);
     timer.start(seconds);
 }
 
 function actions(e) {
     const action = this.dataset.action;
-    if (action === 'continue'){
-        return timer.finish();
-    } else if (action === 'stop'){
+    if (action === 'stop'){
         return timer.stop();
-    } else {
-        return timer.reset();
     }
-
+    return timer.reset();
 }
 
 buttons.forEach(btn => btn.addEventListener('click', startTimer));
@@ -112,7 +118,7 @@ actionBtn.forEach(btns => btns.addEventListener('click', actions));
 document.customForm.addEventListener('submit', function(e) {
     e.preventDefault();
     const mins = Number(this.minutes.value);
-    timer.start(mins * 60);
+   if (mins !== null)timer.start(mins * 60);
     this.reset();
 });
 
