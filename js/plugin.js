@@ -35,6 +35,7 @@ const timer = (function () {
       displayTimeLeft(secondsLeft);
     }, 1000);
     timeValue = countdown;
+    return this;
   }
 
   function displayTimeLeft(seconds) {
@@ -71,22 +72,22 @@ const timer = (function () {
       endTime.innerHTML = '';
   }
 
-  function stop(e) {
-      if(stopTime === -1) {          
-          start();
-      } else {
-          clearInterval(countdown);
-          stopTime = -1;
+  function stop(e) {      
+//       if(stopTime === -1) {
+//           start();
+//       } else {
+           clearInterval(countdown);
+//           stopTime = -1;
           alarmSound.pause();
           alarmSound.currentTime = 0;
-      }
-  } 
+//      }
+  }
 
   return {
       init,
       start,
       stop,
-      reset      
+      reset
   }
 })();
 
@@ -128,3 +129,4 @@ document.customForm.addEventListener('submit', function(e) {
 // разных форматах, дд : чч : мм : сс, чч : мм : сс или мм : сс. В том числе дата когда закончит таймер должна быть
 // полной день.месяц.год часы:минуты
 // 3. вызов методов цепочкой
+
