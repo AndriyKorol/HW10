@@ -62,6 +62,24 @@ body {
   font-family: 'Inconsolata', monospace;
 }
 
+.menu-btn{
+  background-color: rgba(15, 64, 27, 0.18); /* Green */
+  border-radius: 8px;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 20px 10px;
+  cursor: pointer;
+  width: 130px;
+  height: 55px;
+}
+
+.menu-btn:hover{
+  background-color: rgba(12, 30, 37, 0.18); /* Green */
+}
+
 .timer__button:hover,
 .timer__button:focus {
   background:rgba(0,0,0,0.2);
