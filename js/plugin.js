@@ -80,10 +80,12 @@ const timer = (function () {
           alarmSound.pause();
           alarmSound.currentTime = 0;
           console.log("stop");
+          //btn.innerHTML = "Stop";
       } else {
-          setInterval(countdown);
+          //start(endTime - timeValue);
           stopTime = -1;
           console.log("start");
+          //btn.innerHTML = "Start";
       }
   };
 
