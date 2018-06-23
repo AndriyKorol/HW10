@@ -4,9 +4,11 @@ const timer = (function () {
       timerDisplay,
       endTime,
       alarmSound,
-      display = [],
       timeValue,
-      stopTime = -1;
+      stopTime = -1,
+      start,
+      reset,
+      stop;
 
   // Инициализация модуля
   function init(settings) {
@@ -15,7 +17,7 @@ const timer = (function () {
     alarmSound = new Audio(settings.alarmSound);
   }
 
-  function start(seconds) {
+  start = function start(seconds) {
     if(typeof seconds !== "number") return new Error('Please provide seconds!');
 
     const now = Date.now();
@@ -35,8 +37,7 @@ const timer = (function () {
       displayTimeLeft(secondsLeft);
     }, 1000);
     timeValue = countdown;
-    return this;
-  }
+  };
 
   function displayTimeLeft(seconds) {
 
@@ -64,24 +65,26 @@ const timer = (function () {
       endTime.textContent = `Be back ${endDate}`;
   }
 
-  function reset(e) {
+  reset = function reset(e) {
       clearInterval(countdown);
       displayTimeLeft(0);
       timerDisplay.innerHTML = '';
       displayEndTime(0);
       endTime.innerHTML = '';
-  }
+  };
 
-  function stop(e) {      
-//       if(stopTime === -1) {
-//           start();
-//       } else {
-           clearInterval(countdown);
-//           stopTime = -1;
+  stop = function stop(e) {
+      if(stopTime === -1) {
+          clearInterval(countdown);
+          stopTime++;
           alarmSound.pause();
           alarmSound.currentTime = 0;
-//      }
-  }
+      } else {
+          setInterval(countdown);
+          console.log('4');
+          stopTime = -1;
+      }
+  };
 
   return {
       init,
