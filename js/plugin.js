@@ -74,15 +74,16 @@ const timer = (function () {
   };
 
   stop = function stop(e) {
-      if(stopTime === -1) {
+      if(stopTime === -1 && timeValue !== 0) {
           clearInterval(countdown);
           stopTime++;
           alarmSound.pause();
           alarmSound.currentTime = 0;
+          console.log("stop");
       } else {
           setInterval(countdown);
-          console.log('4');
           stopTime = -1;
+          console.log("start");
       }
   };
 
